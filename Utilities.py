@@ -6,6 +6,10 @@ def absdiff(n1,n2):
 	return abs(n1-n2)	
 def NEAR(n1,n2,e):
 	return absdiff(n1,n2) <= e
+def LimitVal(nVal,nLoLim,nHiLim):
+	if nVal < nLoLim: return nLoLim
+	if nVal > nHiLim: return nHiLim
+	return nVal
 if __name__ == "__main__":
 	def main():
 		ts1 = dt.now()
