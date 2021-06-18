@@ -17,4 +17,5 @@ if __name__ == "__main__":
 		print(f"SecondSince: {SecondsSince(ts1)}")
 		print(f"absdiff: {absdiff(3,2)}")
 		print(f"NEAR: {NEAR(2.5,3.5,1)}")
+		print(f'LimitVal: {LimitVal(3,4,10)}')
 	main()
