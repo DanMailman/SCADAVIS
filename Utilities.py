@@ -1,5 +1,7 @@
 from datetime import datetime as dt
 from time import sleep
+from typing import NoReturn
+from ReadWriteLock import ReadWriteLock
 def SecondsSince(TS):
 	return (dt.now() - TS).total_seconds()
 def absdiff(n1,n2):
@@ -25,6 +27,23 @@ class tAverager:
 		self.nCnt = 0
 	def GetAvg(self):
 		return self.nSum / self.nCnt
+class tSeqCounter:
+	def __init__(self):
+		self.Lock = ReadWriteLock()
+		self.nVal = 0
+	def Increment(self):
+		self.Lock.AcqWrite()
+		self.nVal +=1
+		self.Lock.RelWrite()
+	def GetSeqNum(self):
+		self.Lock.AcqRead()
+		nRet = self.nVal
+		self.Lock.RelRead()	
+		return nRet
+	def Reset(self):
+		self.Lock.AcqWrite()
+		self.nVal = 0
+		self.Lock.RelWrite() 
 if __name__ == "__main__":
 	def main():
 		ts1 = dt.now()
@@ -38,5 +57,9 @@ if __name__ == "__main__":
 		oAverager.add(3)
 		oAverager.add(5)
 		print(f'Averager: {oAverager.GetAvg()}: Expect 3')
-		
+		oSeqCtr = tSeqCounter()
+		oSeqCtr.Increment()
+		oSeqCtr.Increment()
+		oSeqCtr.Increment()
+		print(f'SeqCtr: {oSeqCtr.GetSeqNum()}: Expect 3')
 	main()
