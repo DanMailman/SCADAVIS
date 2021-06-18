@@ -1,7 +1,7 @@
 from datetime import datetime as dt
 from time import sleep
 from tSimHeater import tSimHeater
-from Utilities import SecondsSince
+from Utilities import SecondsSince, LimitVal
 class tSimThermometer:
     def __init__(self, HTR, AmbientTemp, DegPerSec):
         self.HTR = HTR
@@ -14,13 +14,7 @@ class tSimThermometer:
     def GetTemp(self):
         NegPos = 1 if self.HTR.State() == "On" else -1
         #print(f'tSimThermomoter(): GetTemp(): {self.Temp} + ({NegPos} * {self.DegPerSec} * {int(SecondsSince(self.LastReadTime))}).')
-        Temp = int(self.Temp + (NegPos * self.DegPerSec * SecondsSince(self.LastReadTime)))
-        if (NegPos == 1) and (Temp >= self.HeaterTemp):
-            self.Temp = self.HeaterTemp
-        elif (NegPos == -1) and (Temp <= self.AmbientTemp):
-            self.Temp = self.AmbientTemp
-        else:
-            self.Temp = Temp
+        self.Temp = LimitVal(int(self.Temp + (NegPos * self.DegPerSec * SecondsSince(self.LastReadTime))),self.AmbientTemp,self.HeaterTemp)
         self.LastReadTime = dt.now()
         return self.Temp
 if __name__ == "__main__":
