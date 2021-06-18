@@ -1,6 +1,5 @@
 from datetime import datetime as dt
 from time import sleep
-from tSimHeater import tSimHeater
 from Utilities import SecondsSince, LimitVal
 class tSimThermometer:
     def __init__(self, HTR, AmbientTemp, DegPerSec):
@@ -18,6 +17,7 @@ class tSimThermometer:
         self.LastReadTime = dt.now()
         return self.Temp
 if __name__ == "__main__":
+    from tSimHeater import tSimHeater
     def main():
         nHEATER_MAX  = 500; sHEATER_UNITS = "degF"
         nAMBIENT_TEMPERATURE = 70; nTEMP_CHG_RATE = 2 
