@@ -65,7 +65,6 @@ if __name__ == "__main__":
 		nAMBIENT_TEMPERATURE = 70; nTEMP_CHG_RATE = 2
 		oTherm = tSimThermometer(oHeater, nAMBIENT_TEMPERATURE, nTEMP_CHG_RATE) # Gets max temp from heater
 
-		
 		nACTUATOR_MIN  = 0; nACTUATOR_MAX = 100; nACTUATOR_MIN_TEMP = 100; nACTUATOR_MAX_TEMP = 135
 		nACTUATOR_HYST_SECS = 3; sACTUATOR_UNITS = "mm"
 		oActuator = tSimTempActuator(eEndSim,oSeqCtr, oTherm,

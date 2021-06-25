@@ -13,7 +13,8 @@ class tSimThermometer:
     def GetTemp(self):
         NegPos = 1 if self.HTR.State() == "On" else -1
         #print(f'tSimThermomoter(): GetTemp(): {self.Temp} + ({NegPos} * {self.DegPerSec} * {int(SecondsSince(self.LastReadTime))}).')
-        self.Temp = LimitVal(int(self.Temp + (NegPos * self.DegPerSec * SecondsSince(self.LastReadTime))),self.AmbientTemp,self.HeaterTemp)
+        self.Temp = int(round(self.Temp + (NegPos * self.DegPerSec * SecondsSince(self.LastReadTime)),0))
+        self.Temp = LimitVal(self.Temp,self.AmbientTemp,self.HeaterTemp)
         self.LastReadTime = dt.now()
         return self.Temp
 if __name__ == "__main__":
