@@ -3,8 +3,8 @@ from time import sleep
 from Utilities import SecondsSince, LimitVal
 class tSimThermometer:
     dictDefaultConfig = { 'MinTemp': -50, 'MaxTemp': 250, 'Units' : 'DegF', 'Ambient': 70, 'Rate':2 }
-    def __init__(self, HTR, dictConfig = dictDefaultConfig):
-        self.HTR = HTR
+    def __init__(self, oHeater, dictConfig = dictDefaultConfig):
+        self.oHeater = oHeater
         self.dictConfig = dictConfig
         self.Temp = self.dictConfig['Ambient']
         self.LastReadTime = dt.now()
@@ -14,7 +14,7 @@ class tSimThermometer:
                      self.Temp,
                      self.dictConfig['Rate']))
     def GetTemp(self):
-        NegPos = 1 if self.HTR.dictSCADA['toggle']['state'] == "On" else -1
+        NegPos = 1 if self.oHeater.dictSCADA['toggle']['state'] == "On" else -1
         #print(f'tSimThermomoter(): GetTemp(): {} + ({} * {} * {}).'.format())
         self.Temp = int(round(self.Temp + 
                         (NegPos * 
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     from tSimHeater import tSimHeater
     def demo():
         oTherm = tSimThermometer(tSimHeater()) 
-        oTherm.HTR.dictSCADA['toggle']['do']()
+        oTherm.oHeater.dictSCADA['toggle']['do']()
         print(f'THERMOMETER: Temp: {oTherm.dictSCADA["temp"]["get"]()}')
         nStartCoolingTemp = 80; bCooling = False
         while True:
@@ -38,7 +38,7 @@ if __name__ == "__main__":
                            oTherm.dictSCADA['temp']['get']()))
             Temp = oTherm.dictSCADA['temp']['get']()
             if (Temp >= oTherm.dictConfig['MaxTemp']) or (Temp >= nStartCoolingTemp):
-                oTherm.HTR.dictSCADA['toggle']['do']()
+                oTherm.oHeater.dictSCADA['toggle']['do']()
                 bCooling = True
             if (bCooling and (Temp <= oTherm.dictConfig['Ambient'])) :
                 break

@@ -59,7 +59,7 @@ if __name__ == "__main__":
 		eEndSim = Event() ; eEndSim.clear(); oSeqCtr = tSeqCounter()
 		oActuator = tSimTempActuator(eEndSim,oSeqCtr, tSimThermometer(tSimHeater()))
 		oActuator.start()
-		oActuator.oTherm.HTR.Toggle()
+		oActuator.oTherm.oHeater.Toggle()
 		GET_TEMP = oActuator.oTherm.dictSCADA['temp']['get']
 		def GET_POS(): return oActuator.dictSCADA["pos"]
 		print(f'ACTUATOR DEMO: PRE-LOOP: HEATING: Temp: {GET_TEMP()}, ACTUATOR: Meas: {GET_POS()}')
@@ -68,7 +68,7 @@ if __name__ == "__main__":
 		while True:
 			Temp = GET_TEMP()
 			if (Temp >= oActuator.dictConfig['MaxTemp']) or (Temp >= nStartCoolingTemp):
-				oActuator.oTherm.HTR.Toggle() 
+				oActuator.oTherm.oHeater.Toggle() 
 				bCooling = True
 				tsStartCooling = dt.now()
 				print(f'ACTUATOR DEMO: LOOP: START COOLING: Temp: {GET_TEMP()}, ACTUATOR: Meas: {GET_POS()}')

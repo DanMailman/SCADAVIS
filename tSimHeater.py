@@ -4,7 +4,7 @@ class tSimHeater:
 	# https://stackoverflow.com/questions/682504/what-is-a-clean-pythonic-way-to-have-multiple-constructors-in-python
 	dictDefaulConfig = { 'MaxTemp': 500 ,'Units'  :"degF"}
 
-	def __init__(self,*args,dictConfig = dictDefaulConfig):
+	def __init__(self,dictConfig = dictDefaulConfig):
 		print(f'tSimHeateConfig): INIT: PLEASE ENSURE HEATER IS TOGGLED OFF!')
 		self.dictConfig = dictConfig
 		self.dictSCADA = { 'toggle' : { 'state': 'Off', 'do': self.Toggle }}
