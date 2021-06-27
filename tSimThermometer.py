@@ -2,29 +2,34 @@ from datetime import datetime as dt
 from time import sleep
 from Utilities import SecondsSince, LimitVal
 class tSimThermometer:
-    dictDefaultConfig = { 'Min': -50, 'Max': 250, 'Units' : 'DegF', 'Ambient': 70, 'Rate':2 }
+    dictDefaultConfig = { 'Min': -50, 'Max': 500, 'Units' : 'DegF', 'Ambient': 70, 'Rate': 3 }
     def __init__(self, oHeater, dictConfig = dictDefaultConfig):
         self.oHeater = oHeater
         self.dictConfig = dictConfig
-        self.Temp = self.dictConfig['Ambient']
         self.LastReadTime = dt.now()
-        self.dictSCADA = { 'temp': { 'get': self.GetTemp }}
+        self.dictSCADA = { 'temp': { 'val': self.dictConfig['Ambient'], 'get': self.GetTemp }}
         print("tSimThermomoter(): INIT: Time {} Temp: {}, Rate: {}".
-              format(self.LastReadTime,
-                     self.Temp,
+              format(int(round(SecondsSince(self.LastReadTime),0)),
+                     self.dictSCADA['temp']['val'],
                      self.dictConfig['Rate']))
     def GetTemp(self):
-        NegPos = 1 if self.oHeater.dictSCADA['toggle']['state'] == "On" else -1
-        #print(f'tSimThermomoter(): GetTemp(): {} + ({} * {} * {}).'.format())
-        self.Temp = int(round(self.Temp + 
+        NegPos = 1 if self.oHeater.dictSCADA['toggle']['get']() == "On" else -1
+        """ 
+        print('tSimThermomoter(): GetTemp(): {} + ({} * {} * {}) ==>> {}.'
+                .format(int(round(self.dictSCADA['temp']['val'],
+                NegPos,self.dictConfig['Rate'],
+                SecondsSince(self.LastReadTime))))) 
+        """
+        self.dictSCADA['temp']['val'] = int(round(self.dictSCADA['temp']['val'] + 
                         (NegPos * 
                         self.dictConfig['Rate'] * 
                         SecondsSince(self.LastReadTime)),0))
-        self.Temp = LimitVal(self.Temp,
+        self.dictSCADA['temp']['val'] = LimitVal(self.dictSCADA['temp']['val'],
                             self.dictConfig['Ambient'],
                             self.dictConfig['Max'])
         self.LastReadTime = dt.now()
-        return self.Temp
+        #print(f"tSimThermomoter(): {self.dictSCADA['temp']['val']}")
+        return self.dictSCADA['temp']['val']
 if __name__ == "__main__":
     from tSimHeater import tSimHeater
     def demo():

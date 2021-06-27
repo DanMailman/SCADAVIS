@@ -33,8 +33,8 @@ class tSeqCounter:
 		self.nVal = 0
 	def Increment(self):
 		self.Lock.AcqWrite()
-		self.nVal +=1
 		nRet = self.nVal
+		self.nVal +=1
 		self.Lock.RelWrite()
 		return nRet
 	def GetSeqNum(self):

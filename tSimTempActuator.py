@@ -6,8 +6,8 @@ from Utilities import tAverager, tSeqCounter
 
 class tSimTempActuator(Thread):
 		
-	dictDefaultConfig = { 'MinPos': 0,    'MaxPos':  100, 'PosUnits': 'mm', 
-	                      'MinTemp': 100, 'MaxTemp': 135, 'TempUnits': 'DegF', 'HystSecs': 3}
+	dictDefaultConfig = { 'MinPos': 0,   'MaxPos':  100, 'PosUnits': 'mm', 
+	                      'MinTemp': 75, 'MaxTemp': 90, 'TempUnits': 'DegF', 'HystSecs': 3}
 	def __init__(self, eEndSim, oSeqCtr, oTherm, dictConfig = dictDefaultConfig):
 		print(f"ACTUATOR SIM: INIT.") 
 		Thread.__init__(self)
@@ -16,7 +16,7 @@ class tSimTempActuator(Thread):
         
 		self.Slope = ( self.dictConfig['MaxPos']  - self.dictConfig['MinPos'] ) /\
 		      		 ( self.dictConfig['MaxTemp'] - self.dictConfig['MinTemp'] )
-		self.dictSCADA = { 'pos': self.dictConfig['MinPos']}
+		self.dictSCADA = { 'pos': { 'val': self.dictConfig['MinPos'], 'get': self.GetPos }}
 		self.StartTime = dt.now()
 		self.TempAverager = tAverager()
 	def run(self):
@@ -31,16 +31,18 @@ class tSimTempActuator(Thread):
 			self.TempAverager.add(self.oTherm.GetTemp())
 			if SecondsSince(self.StartAvgTime) >= self.dictConfig['HystSecs']:
 				TempAvg = self.TempAverager.GetAvg()
-				self.dictSCADA['pos'] = self.DegToDiv(TempAvg)
+				self.dictSCADA['pos']['val'] = self.DegToDiv(TempAvg)
 				self.TempAverager.start(TempAvg) # TODO: Consider oTherm.GetTemp()
 				self.StartAvgTime = dt.now()
 				print("\t ACTUATOR SIM: T({}): HYSTERESIS: {} Secs, AvgTemp: {}, POS: {}.".
 						format(self.oSeqCtr.GetSeqNum(),
 						       self.dictConfig['HystSecs'],
 							   int(TempAvg),
-							   self.dictSCADA['pos'])) 
+							   self.dictSCADA['pos']['get']())) 
 			sleep (1)
 		print(f'\t ACTUATOR SIM: T({self.oSeqCtr.GetSeqNum()}): THREADED LOOP: EXIT!')
+	def GetPos(self):
+		return self.dictSCADA['pos']['val']
 	def DegToDiv(self,Deg):
 		if Deg < self.dictConfig['MinTemp']: 
 			Div = self.dictConfig['MinPos']
@@ -61,7 +63,7 @@ if __name__ == "__main__":
 		oActuator.start()
 		oActuator.oTherm.oHeater.Toggle()
 		GET_TEMP = oActuator.oTherm.dictSCADA['temp']['get']
-		def GET_POS(): return oActuator.dictSCADA["pos"]
+		def GET_POS(): return oActuator.dictSCADA['pos']['get']()
 		print(f'ACTUATOR DEMO: PRE-LOOP: HEATING: Temp: {GET_TEMP()}, ACTUATOR: Meas: {GET_POS()}')
 		nStartCoolingTemp = 150; bCooling = False
 		print(f"ACTUATOR DEMO: LOOP: ENTER.") 
