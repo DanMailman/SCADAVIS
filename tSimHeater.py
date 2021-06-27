@@ -2,7 +2,7 @@ class tSimHeater:
 	# TODO: Expose Max Temp
 	# TODO: Prompt for Max Temp with alternate constructor
 	# https://stackoverflow.com/questions/682504/what-is-a-clean-pythonic-way-to-have-multiple-constructors-in-python
-	dictDefaulConfig = { 'MaxTemp': 500 ,'Units'  :"degF"}
+	dictDefaulConfig = { 'Max': 500 ,'Units'  :"degF"}
 
 	def __init__(self,dictConfig = dictDefaulConfig):
 		print(f'tSimHeateConfig): INIT: PLEASE ENSURE HEATER IS TOGGLED OFF!')
@@ -15,7 +15,7 @@ class tSimHeater:
 if __name__ == "__main__":
 	def main():
 		oHeater = tSimHeater()
-		print(f'HEATER: Config: {oHeater.dictConfig["MaxTemp"]}, Units: {oHeater.dictConfig["Units"]}')
+		print(f'HEATER: Config: {oHeater.dictConfig["Max"]}, Units: {oHeater.dictConfig["Units"]}')
 		print(f'HEATER: State: Toggle: {oHeater.dictSCADA["toggle"]["state"]}')
 		print(f'HEATER: Toggling {oHeater.dictSCADA["toggle"]["do"]()}')
 		print(f'HEATER: New State: {oHeater.dictSCADA["toggle"]["state"]}')

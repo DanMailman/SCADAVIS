@@ -2,7 +2,7 @@ from datetime import datetime as dt
 from time import sleep
 from Utilities import SecondsSince, LimitVal
 class tSimThermometer:
-    dictDefaultConfig = { 'MinTemp': -50, 'MaxTemp': 250, 'Units' : 'DegF', 'Ambient': 70, 'Rate':2 }
+    dictDefaultConfig = { 'Min': -50, 'Max': 250, 'Units' : 'DegF', 'Ambient': 70, 'Rate':2 }
     def __init__(self, oHeater, dictConfig = dictDefaultConfig):
         self.oHeater = oHeater
         self.dictConfig = dictConfig
@@ -22,7 +22,7 @@ class tSimThermometer:
                         SecondsSince(self.LastReadTime)),0))
         self.Temp = LimitVal(self.Temp,
                             self.dictConfig['Ambient'],
-                            self.dictConfig['MaxTemp'])
+                            self.dictConfig['Max'])
         self.LastReadTime = dt.now()
         return self.Temp
 if __name__ == "__main__":
@@ -37,7 +37,7 @@ if __name__ == "__main__":
                     format("Cooling" if bCooling else "Heating",
                            oTherm.dictSCADA['temp']['get']()))
             Temp = oTherm.dictSCADA['temp']['get']()
-            if (Temp >= oTherm.dictConfig['MaxTemp']) or (Temp >= nStartCoolingTemp):
+            if (Temp >= oTherm.dictConfig['Max']) or (Temp >= nStartCoolingTemp):
                 oTherm.oHeater.dictSCADA['toggle']['do']()
                 bCooling = True
             if (bCooling and (Temp <= oTherm.dictConfig['Ambient'])) :

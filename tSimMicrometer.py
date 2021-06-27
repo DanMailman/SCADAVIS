@@ -10,7 +10,7 @@ class tSimMicrometer:
 		self.dictConfig = dictConfig
 		self.dictSCADA = { 'pos': { 'get': self.GetMeas }}
 	def GetMeas(self):
-		return LimitVal(self.oDev.dictSCADA['pos'](), 
+		return LimitVal(self.oDev.dictSCADA['pos']['get'](), 
 					    self.dictConfig['Min'],
 						self.dictConfig['Max'])
 	def GetUnits(self):
@@ -21,7 +21,7 @@ if __name__ == "__main__":
 		def __init__(self,dictConfig = dictDefaultConfig):
 			self.dictConfig = dictConfig
 			self.nVal = 0
-			self.dictSCADA  = { 'pos': self.dictSCADA['pos']['get']}
+			self.dictSCADA  = { 'pos': { 'get': self.GetMeas } }
 		def GetMeas(self):
 			self.nVal +=1
 			return self.nVal
@@ -29,5 +29,5 @@ if __name__ == "__main__":
 	def demo():
 		oMMeter = tSimMicrometer(tMMDevice())
 		for i in range(10):
-			print(f"oMMeter: {oMMeter.dictSCADA['pos']()} {oMMeter.dictConfig['Units']}")
+			print(f"oMMeter: {oMMeter.dictSCADA['pos']['get']()} {oMMeter.dictConfig['Units']}")
 	demo()
