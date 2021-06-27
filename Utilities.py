@@ -34,7 +34,9 @@ class tSeqCounter:
 	def Increment(self):
 		self.Lock.AcqWrite()
 		self.nVal +=1
+		nRet = self.nVal
 		self.Lock.RelWrite()
+		return nRet
 	def GetSeqNum(self):
 		self.Lock.AcqRead()
 		nRet = self.nVal
@@ -45,7 +47,7 @@ class tSeqCounter:
 		self.nVal = 0
 		self.Lock.RelWrite() 
 if __name__ == "__main__":
-	def main():
+	def demo():
 		ts1 = dt.now()
 		sleep(1)
 		print(f"SecondSince: {SecondsSince(ts1)}")
@@ -58,8 +60,8 @@ if __name__ == "__main__":
 		oAverager.add(5)
 		print(f'Averager: {oAverager.GetAvg()}: Expect 3')
 		oSeqCtr = tSeqCounter()
-		oSeqCtr.Increment()
-		oSeqCtr.Increment()
-		oSeqCtr.Increment()
+		print(f'SeqCtr.Increment: {oSeqCtr.Increment()}')
+		print(f'SeqCtr.Increment: {oSeqCtr.Increment()}')
+		print(f'SeqCtr.Increment: {oSeqCtr.Increment()}')
 		print(f'SeqCtr: {oSeqCtr.GetSeqNum()}: Expect 3')
-	main()
+	demo()
