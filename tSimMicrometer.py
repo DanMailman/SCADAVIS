@@ -8,7 +8,7 @@ class tSimMicrometer:
 		print(f'tSimMicrometer(): INIT!')
 		self.oDev = oDevToMeasure
 		self.dictConfig = dictConfig
-		self.dictSCADA = { 'pos': self.GetMeas }
+		self.dictSCADA = { 'pos': { 'get': self.GetMeas }}
 	def GetMeas(self):
 		return LimitVal(self.oDev.dictSCADA['pos'](), 
 					    self.dictConfig['Min'],
@@ -21,7 +21,7 @@ if __name__ == "__main__":
 		def __init__(self,dictConfig = dictDefaultConfig):
 			self.dictConfig = dictConfig
 			self.nVal = 0
-			self.dictSCADA  = { 'pos': self.GetMeas}
+			self.dictSCADA  = { 'pos': self.dictSCADA['pos']['get']}
 		def GetMeas(self):
 			self.nVal +=1
 			return self.nVal
