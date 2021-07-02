@@ -1,5 +1,10 @@
+# TODO: Demo OnLinux
+# TODO: Demo DoZoom
+# TODO: Demo tSeqCounter.GetSeqList
+
 from datetime import datetime as dt
 from time import sleep
+from tkinter.constants import NO
 from typing import NoReturn
 from ReadWriteLock import ReadWriteLock
 def SecondsSince(TS):
@@ -28,9 +33,14 @@ class tAverager:
 	def GetAvg(self):
 		return self.nSum / self.nCnt
 class tSeqCounter:
-	def __init__(self):
+	def __init__(self,**kwargs):
 		self.Lock = ReadWriteLock()
-		self.nVal = 0
+		if kwargs.get('start_at') != None:
+			self.nVal = kwargs['start_at']
+			self.start_at = kwargs['start_at']
+		else: 
+			self.nVal = 0
+			self.start_at = 0
 	def Increment(self):
 		self.Lock.AcqWrite()
 		nRet = self.nVal
@@ -42,10 +52,26 @@ class tSeqCounter:
 		nRet = self.nVal
 		self.Lock.RelRead()	
 		return nRet
+	def GetSeqList(self):
+		nVal = self.GetSeqNum()
+		return [n for n in range(self.start_at,nVal+1)]
+	def IncSeqList(self):
+		nVal = self.Increment()
+		return [n for n in range(self.start_at,nVal+1)]
 	def Reset(self):
 		self.Lock.AcqWrite()
 		self.nVal = 0
 		self.Lock.RelWrite() 
+def OnLinux():
+    from platform import system
+    if system().lower().startswith('lin'): return True
+def DoZoom(root,bZoom):
+    if (bZoom):
+        if OnLinux(): root.attributes('-zoomed', True)
+        else: root.state('zoomed')
+    else:
+        if OnLinux(): pass # root.attributes('-zoomed',False)
+        else: root.state('normal')
 if __name__ == "__main__":
 	def demo():
 		ts1 = dt.now()
